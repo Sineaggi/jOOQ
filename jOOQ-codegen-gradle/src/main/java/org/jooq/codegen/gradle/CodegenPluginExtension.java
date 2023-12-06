@@ -37,13 +37,12 @@
  */
 package org.jooq.codegen.gradle;
 
+import org.gradle.api.Action;
 import org.gradle.api.NamedDomainObjectContainer;
 import org.gradle.api.file.ProjectLayout;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.ProviderFactory;
 import org.jooq.meta.jaxb.Configuration;
-import org.jooq.meta.jaxb.Generator;
-import org.jooq.meta.jaxb.Target;
 import org.jooq.util.jaxb.tools.MiniJAXB;
 
 import javax.inject.Inject;
@@ -76,12 +75,20 @@ public class CodegenPluginExtension {
         MiniJAXB.append(this.configuration, configuration);
     }
 
+    /*
     public void configuration(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = MetaExtensions.ConfigurationExtension.class) Closure<?> closure) {
         MetaExtensions.ConfigurationExtension c = new MetaExtensions.ConfigurationExtension();
         closure = (Closure<?>) closure.clone();
         closure.setResolveStrategy(Closure.DELEGATE_FIRST);
         closure.setDelegate(c);
         closure.call(c);
+        configuration(c);
+    }
+     */
+
+    public void configuration(Action<? super MetaExtensions.ConfigurationExtension> action) {
+        MetaExtensions.ConfigurationExtension c = new MetaExtensions.ConfigurationExtension();
+        action.execute(c);
         configuration(c);
     }
 

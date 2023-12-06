@@ -38,24 +38,26 @@
 package org.jooq.codegen.gradle;
 
 import java.util.*;
-import groovy.lang.*;
+
+//import groovy.lang.Closure;
+//import groovy.lang.DelegatesTo;
+import org.gradle.api.Action;
 import org.jooq.meta.jaxb.*;
 
 /**
  * Extensions for the jOOQ-meta types, to enable groovy DSL usage.
  */
+@SuppressWarnings("ALL")
 public class MetaExtensions {
 
 
     public static class ConfigurationExtension extends Configuration {
-        public void jdbc(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = JdbcExtension.class) Closure<?> closure) {
+        public void jdbc(Action<? super JdbcExtension> action) {
             JdbcExtension o = new JdbcExtension();
-            closure = (Closure<?>) closure.clone();
-            closure.setResolveStrategy(Closure.DELEGATE_FIRST);
-            closure.setDelegate(o);
-            closure.call(o);
+            action.execute(o);
             setJdbc(o);
         }
+        /*
         public void generator(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = GeneratorExtension.class) Closure<?> closure) {
             GeneratorExtension o = new GeneratorExtension();
             closure = (Closure<?>) closure.clone();
@@ -64,16 +66,19 @@ public class MetaExtensions {
             closure.call(o);
             setGenerator(o);
         }
+         */
+        public void generator(Action<? super GeneratorExtension> action) {
+            GeneratorExtension o = new GeneratorExtension() {};
+            action.execute(o);
+            setGenerator(o);
+        }
     }
 
     public static class JdbcExtension extends Jdbc {
 
-        public void properties(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = PropertyListExtension.class) Closure<?> closure) {
+        public void properties(Action<? super PropertyListExtension> action) {
             PropertyListExtension l = new PropertyListExtension();
-            closure = (Closure<?>) closure.clone();
-            closure.setResolveStrategy(Closure.DELEGATE_FIRST);
-            closure.setDelegate(l);
-            closure.call(l);
+            action.execute(l);
             setProperties(l);
         }
     }
@@ -81,15 +86,13 @@ public class MetaExtensions {
     public static class PropertyExtension extends Property {
     }
 
-    public static class GeneratorExtension extends Generator {
-        public void strategy(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = StrategyExtension.class) Closure<?> closure) {
+    public static abstract class GeneratorExtension extends Generator {
+        public void strategy(Action<? super StrategyExtension> action) {
             StrategyExtension o = new StrategyExtension();
-            closure = (Closure<?>) closure.clone();
-            closure.setResolveStrategy(Closure.DELEGATE_FIRST);
-            closure.setDelegate(o);
-            closure.call(o);
+            action.execute(o);
             setStrategy(o);
         }
+        /*
         public void database(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = DatabaseExtension.class) Closure<?> closure) {
             DatabaseExtension o = new DatabaseExtension();
             closure = (Closure<?>) closure.clone();
@@ -98,14 +101,18 @@ public class MetaExtensions {
             closure.call(o);
             setDatabase(o);
         }
-        public void generate(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = GenerateExtension.class) Closure<?> closure) {
+         */
+        public void database(Action<? super DatabaseExtension> action) {
+            DatabaseExtension o = new DatabaseExtension();
+            action.execute(o);
+            setDatabase(o);
+        }
+        public void generate(Action<? super GenerateExtension> action) {
             GenerateExtension o = new GenerateExtension();
-            closure = (Closure<?>) closure.clone();
-            closure.setResolveStrategy(Closure.DELEGATE_FIRST);
-            closure.setDelegate(o);
-            closure.call(o);
+            action.execute(o);
             setGenerate(o);
         }
+        /*
         public void target(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = TargetExtension.class) Closure<?> closure) {
             TargetExtension o = new TargetExtension();
             closure = (Closure<?>) closure.clone();
@@ -114,155 +121,113 @@ public class MetaExtensions {
             closure.call(o);
             setTarget(o);
         }
+         */
+        public void target(Action<? super TargetExtension> action) {
+            TargetExtension o = new TargetExtension();
+            action.execute(o);
+            setTarget(o);
+        }
     }
 
     public static class StrategyExtension extends Strategy {
-        public void matchers(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = MatchersExtension.class) Closure<?> closure) {
+        public void matchers(Action<? super MatchersExtension> action) {
             MatchersExtension o = new MatchersExtension();
-            closure = (Closure<?>) closure.clone();
-            closure.setResolveStrategy(Closure.DELEGATE_FIRST);
-            closure.setDelegate(o);
-            closure.call(o);
+            action.execute(o);
             setMatchers(o);
         }
     }
 
     public static class MatchersExtension extends Matchers {
 
-        public void catalogs(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = MatchersCatalogTypeListExtension.class) Closure<?> closure) {
+        public void catalogs(Action<? super MatchersCatalogTypeListExtension> action) {
             MatchersCatalogTypeListExtension l = new MatchersCatalogTypeListExtension();
-            closure = (Closure<?>) closure.clone();
-            closure.setResolveStrategy(Closure.DELEGATE_FIRST);
-            closure.setDelegate(l);
-            closure.call(l);
+            action.execute(l);
             setCatalogs(l);
         }
 
-        public void schemas(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = MatchersSchemaTypeListExtension.class) Closure<?> closure) {
+        public void schemas(Action<? super MatchersSchemaTypeListExtension> action) {
             MatchersSchemaTypeListExtension l = new MatchersSchemaTypeListExtension();
-            closure = (Closure<?>) closure.clone();
-            closure.setResolveStrategy(Closure.DELEGATE_FIRST);
-            closure.setDelegate(l);
-            closure.call(l);
+            action.execute(l);
             setSchemas(l);
         }
 
-        public void tables(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = MatchersTableTypeListExtension.class) Closure<?> closure) {
+        public void tables(Action<? super MatchersTableTypeListExtension> action) {
             MatchersTableTypeListExtension l = new MatchersTableTypeListExtension();
-            closure = (Closure<?>) closure.clone();
-            closure.setResolveStrategy(Closure.DELEGATE_FIRST);
-            closure.setDelegate(l);
-            closure.call(l);
+            action.execute(l);
             setTables(l);
         }
 
-        public void indexes(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = MatchersIndexTypeListExtension.class) Closure<?> closure) {
+        public void indexes(Action<? super MatchersIndexTypeListExtension> action) {
             MatchersIndexTypeListExtension l = new MatchersIndexTypeListExtension();
-            closure = (Closure<?>) closure.clone();
-            closure.setResolveStrategy(Closure.DELEGATE_FIRST);
-            closure.setDelegate(l);
-            closure.call(l);
+            action.execute(l);
             setIndexes(l);
         }
 
-        public void primaryKeys(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = MatchersPrimaryKeyTypeListExtension.class) Closure<?> closure) {
+        public void primaryKeys(Action<? super MatchersPrimaryKeyTypeListExtension> action) {
             MatchersPrimaryKeyTypeListExtension l = new MatchersPrimaryKeyTypeListExtension();
-            closure = (Closure<?>) closure.clone();
-            closure.setResolveStrategy(Closure.DELEGATE_FIRST);
-            closure.setDelegate(l);
-            closure.call(l);
+            action.execute(l);
             setPrimaryKeys(l);
         }
 
-        public void uniqueKeys(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = MatchersUniqueKeyTypeListExtension.class) Closure<?> closure) {
+        public void uniqueKeys(Action<? super MatchersUniqueKeyTypeListExtension> action) {
             MatchersUniqueKeyTypeListExtension l = new MatchersUniqueKeyTypeListExtension();
-            closure = (Closure<?>) closure.clone();
-            closure.setResolveStrategy(Closure.DELEGATE_FIRST);
-            closure.setDelegate(l);
-            closure.call(l);
+            action.execute(l);
             setUniqueKeys(l);
         }
 
-        public void foreignKeys(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = MatchersForeignKeyTypeListExtension.class) Closure<?> closure) {
+        public void foreignKeys(Action<? super MatchersForeignKeyTypeListExtension> action) {
             MatchersForeignKeyTypeListExtension l = new MatchersForeignKeyTypeListExtension();
-            closure = (Closure<?>) closure.clone();
-            closure.setResolveStrategy(Closure.DELEGATE_FIRST);
-            closure.setDelegate(l);
-            closure.call(l);
+            action.execute(l);
             setForeignKeys(l);
         }
 
-        public void fields(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = MatchersFieldTypeListExtension.class) Closure<?> closure) {
+        public void fields(Action<? super MatchersFieldTypeListExtension> action) {
             MatchersFieldTypeListExtension l = new MatchersFieldTypeListExtension();
-            closure = (Closure<?>) closure.clone();
-            closure.setResolveStrategy(Closure.DELEGATE_FIRST);
-            closure.setDelegate(l);
-            closure.call(l);
+            action.execute(l);
             setFields(l);
         }
 
-        public void routines(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = MatchersRoutineTypeListExtension.class) Closure<?> closure) {
+        public void routines(Action<? super MatchersRoutineTypeListExtension> action) {
             MatchersRoutineTypeListExtension l = new MatchersRoutineTypeListExtension();
-            closure = (Closure<?>) closure.clone();
-            closure.setResolveStrategy(Closure.DELEGATE_FIRST);
-            closure.setDelegate(l);
-            closure.call(l);
+            action.execute(l);
             setRoutines(l);
         }
 
-        public void sequences(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = MatchersSequenceTypeListExtension.class) Closure<?> closure) {
+        public void sequences(Action<? super MatchersSequenceTypeListExtension> action) {
             MatchersSequenceTypeListExtension l = new MatchersSequenceTypeListExtension();
-            closure = (Closure<?>) closure.clone();
-            closure.setResolveStrategy(Closure.DELEGATE_FIRST);
-            closure.setDelegate(l);
-            closure.call(l);
+            action.execute(l);
             setSequences(l);
         }
 
-        public void enums(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = MatchersEnumTypeListExtension.class) Closure<?> closure) {
+        public void enums(Action<? super MatchersEnumTypeListExtension> action) {
             MatchersEnumTypeListExtension l = new MatchersEnumTypeListExtension();
-            closure = (Closure<?>) closure.clone();
-            closure.setResolveStrategy(Closure.DELEGATE_FIRST);
-            closure.setDelegate(l);
-            closure.call(l);
+            action.execute(l);
             setEnums(l);
         }
 
-        public void embeddables(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = MatchersEmbeddableTypeListExtension.class) Closure<?> closure) {
+        public void embeddables(Action<? super MatchersEmbeddableTypeListExtension> action) {
             MatchersEmbeddableTypeListExtension l = new MatchersEmbeddableTypeListExtension();
-            closure = (Closure<?>) closure.clone();
-            closure.setResolveStrategy(Closure.DELEGATE_FIRST);
-            closure.setDelegate(l);
-            closure.call(l);
+            action.execute(l);
             setEmbeddables(l);
         }
 
-        public void udts(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = MatchersUDTTypeListExtension.class) Closure<?> closure) {
+        public void udts(Action<? super MatchersUDTTypeListExtension> action) {
             MatchersUDTTypeListExtension l = new MatchersUDTTypeListExtension();
-            closure = (Closure<?>) closure.clone();
-            closure.setResolveStrategy(Closure.DELEGATE_FIRST);
-            closure.setDelegate(l);
-            closure.call(l);
+            action.execute(l);
             setUdts(l);
         }
 
-        public void attributes(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = MatchersAttributeTypeListExtension.class) Closure<?> closure) {
+        public void attributes(Action<? super MatchersAttributeTypeListExtension> action) {
             MatchersAttributeTypeListExtension l = new MatchersAttributeTypeListExtension();
-            closure = (Closure<?>) closure.clone();
-            closure.setResolveStrategy(Closure.DELEGATE_FIRST);
-            closure.setDelegate(l);
-            closure.call(l);
+            action.execute(l);
             setAttributes(l);
         }
     }
 
     public static class MatchersCatalogTypeExtension extends MatchersCatalogType {
-        public void catalogClass(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = MatcherRuleExtension.class) Closure<?> closure) {
+        public void catalogClass(Action<? super MatcherRuleExtension> action) {
             MatcherRuleExtension o = new MatcherRuleExtension();
-            closure = (Closure<?>) closure.clone();
-            closure.setResolveStrategy(Closure.DELEGATE_FIRST);
-            closure.setDelegate(o);
-            closure.call(o);
+            action.execute(o);
             setCatalogClass(o);
         }
     }
@@ -310,15 +275,12 @@ public class MetaExtensions {
     }
 
     public static class DatabaseExtension extends Database {
-        public void syntheticObjects(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = SyntheticObjectsTypeExtension.class) Closure<?> closure) {
+        public void syntheticObjects(Action<? super SyntheticObjectsTypeExtension> action) {
             SyntheticObjectsTypeExtension o = new SyntheticObjectsTypeExtension();
-            closure = (Closure<?>) closure.clone();
-            closure.setResolveStrategy(Closure.DELEGATE_FIRST);
-            closure.setDelegate(o);
-            closure.call(o);
+            action.execute(o);
             setSyntheticObjects(o);
         }
-
+        /*
         public void properties(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = PropertyListExtension.class) Closure<?> closure) {
             PropertyListExtension l = new PropertyListExtension();
             closure = (Closure<?>) closure.clone();
@@ -327,160 +289,116 @@ public class MetaExtensions {
             closure.call(l);
             setProperties(l);
         }
+         */
 
-        public void comments(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = CommentTypeListExtension.class) Closure<?> closure) {
+        public void properties(Action<? super PropertyListExtension> action) {
+            PropertyListExtension l = new PropertyListExtension();
+            action.execute(l);
+            setProperties(l);
+        }
+
+        public void comments(Action<? super CommentTypeListExtension> action) {
             CommentTypeListExtension l = new CommentTypeListExtension();
-            closure = (Closure<?>) closure.clone();
-            closure.setResolveStrategy(Closure.DELEGATE_FIRST);
-            closure.setDelegate(l);
-            closure.call(l);
+            action.execute(l);
             setComments(l);
         }
 
-        public void catalogs(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = CatalogMappingTypeListExtension.class) Closure<?> closure) {
+        public void catalogs(Action<? super CatalogMappingTypeListExtension> action) {
             CatalogMappingTypeListExtension l = new CatalogMappingTypeListExtension();
-            closure = (Closure<?>) closure.clone();
-            closure.setResolveStrategy(Closure.DELEGATE_FIRST);
-            closure.setDelegate(l);
-            closure.call(l);
+            action.execute(l);
             setCatalogs(l);
         }
 
-        public void schemata(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = SchemaMappingTypeListExtension.class) Closure<?> closure) {
+        public void schemata(Action<? super SchemaMappingTypeListExtension> action) {
             SchemaMappingTypeListExtension l = new SchemaMappingTypeListExtension();
-            closure = (Closure<?>) closure.clone();
-            closure.setResolveStrategy(Closure.DELEGATE_FIRST);
-            closure.setDelegate(l);
-            closure.call(l);
+            action.execute(l);
             setSchemata(l);
         }
 
-        public void embeddables(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = EmbeddableDefinitionTypeListExtension.class) Closure<?> closure) {
+        public void embeddables(Action<? super EmbeddableDefinitionTypeListExtension> action) {
             EmbeddableDefinitionTypeListExtension l = new EmbeddableDefinitionTypeListExtension();
-            closure = (Closure<?>) closure.clone();
-            closure.setResolveStrategy(Closure.DELEGATE_FIRST);
-            closure.setDelegate(l);
-            closure.call(l);
+            action.execute(l);
             setEmbeddables(l);
         }
 
-        public void customTypes(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = CustomTypeListExtension.class) Closure<?> closure) {
+        public void customTypes(Action<? super CustomTypeListExtension> action) {
             CustomTypeListExtension l = new CustomTypeListExtension();
-            closure = (Closure<?>) closure.clone();
-            closure.setResolveStrategy(Closure.DELEGATE_FIRST);
-            closure.setDelegate(l);
-            closure.call(l);
+            action.execute(l);
             setCustomTypes(l);
         }
 
-        public void enumTypes(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = EnumTypeListExtension.class) Closure<?> closure) {
+        public void enumTypes(Action<? super EnumTypeListExtension> action) {
             EnumTypeListExtension l = new EnumTypeListExtension();
-            closure = (Closure<?>) closure.clone();
-            closure.setResolveStrategy(Closure.DELEGATE_FIRST);
-            closure.setDelegate(l);
-            closure.call(l);
+            action.execute(l);
             setEnumTypes(l);
         }
 
-        public void forcedTypes(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = ForcedTypeListExtension.class) Closure<?> closure) {
+        public void forcedTypes(Action<? super ForcedTypeListExtension> action) {
             ForcedTypeListExtension l = new ForcedTypeListExtension();
-            closure = (Closure<?>) closure.clone();
-            closure.setResolveStrategy(Closure.DELEGATE_FIRST);
-            closure.setDelegate(l);
-            closure.call(l);
+            action.execute(l);
             setForcedTypes(l);
         }
     }
 
     public static class SyntheticObjectsTypeExtension extends SyntheticObjectsType {
 
-        public void readonlyColumns(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = SyntheticReadonlyColumnTypeListExtension.class) Closure<?> closure) {
+        public void readonlyColumns(Action<? super SyntheticReadonlyColumnTypeListExtension> action) {
             SyntheticReadonlyColumnTypeListExtension l = new SyntheticReadonlyColumnTypeListExtension();
-            closure = (Closure<?>) closure.clone();
-            closure.setResolveStrategy(Closure.DELEGATE_FIRST);
-            closure.setDelegate(l);
-            closure.call(l);
+            action.execute(l);
             setReadonlyColumns(l);
         }
 
-        public void readonlyRowids(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = SyntheticReadonlyRowidTypeListExtension.class) Closure<?> closure) {
+        public void readonlyRowids(Action<? super SyntheticReadonlyRowidTypeListExtension> action) {
             SyntheticReadonlyRowidTypeListExtension l = new SyntheticReadonlyRowidTypeListExtension();
-            closure = (Closure<?>) closure.clone();
-            closure.setResolveStrategy(Closure.DELEGATE_FIRST);
-            closure.setDelegate(l);
-            closure.call(l);
+            action.execute(l);
             setReadonlyRowids(l);
         }
 
-        public void columns(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = SyntheticColumnTypeListExtension.class) Closure<?> closure) {
+        public void columns(Action<? super SyntheticColumnTypeListExtension> action) {
             SyntheticColumnTypeListExtension l = new SyntheticColumnTypeListExtension();
-            closure = (Closure<?>) closure.clone();
-            closure.setResolveStrategy(Closure.DELEGATE_FIRST);
-            closure.setDelegate(l);
-            closure.call(l);
+            action.execute(l);
             setColumns(l);
         }
 
-        public void identities(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = SyntheticIdentityTypeListExtension.class) Closure<?> closure) {
+        public void identities(Action<? super SyntheticIdentityTypeListExtension> action) {
             SyntheticIdentityTypeListExtension l = new SyntheticIdentityTypeListExtension();
-            closure = (Closure<?>) closure.clone();
-            closure.setResolveStrategy(Closure.DELEGATE_FIRST);
-            closure.setDelegate(l);
-            closure.call(l);
+            action.execute(l);
             setIdentities(l);
         }
 
-        public void enums(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = SyntheticEnumTypeListExtension.class) Closure<?> closure) {
+        public void enums(Action<? super SyntheticEnumTypeListExtension> action) {
             SyntheticEnumTypeListExtension l = new SyntheticEnumTypeListExtension();
-            closure = (Closure<?>) closure.clone();
-            closure.setResolveStrategy(Closure.DELEGATE_FIRST);
-            closure.setDelegate(l);
-            closure.call(l);
+            action.execute(l);
             setEnums(l);
         }
 
-        public void primaryKeys(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = SyntheticPrimaryKeyTypeListExtension.class) Closure<?> closure) {
+        public void primaryKeys(Action<? super SyntheticPrimaryKeyTypeListExtension> action) {
             SyntheticPrimaryKeyTypeListExtension l = new SyntheticPrimaryKeyTypeListExtension();
-            closure = (Closure<?>) closure.clone();
-            closure.setResolveStrategy(Closure.DELEGATE_FIRST);
-            closure.setDelegate(l);
-            closure.call(l);
+            action.execute(l);
             setPrimaryKeys(l);
         }
 
-        public void uniqueKeys(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = SyntheticUniqueKeyTypeListExtension.class) Closure<?> closure) {
+        public void uniqueKeys(Action<? super SyntheticUniqueKeyTypeListExtension> action) {
             SyntheticUniqueKeyTypeListExtension l = new SyntheticUniqueKeyTypeListExtension();
-            closure = (Closure<?>) closure.clone();
-            closure.setResolveStrategy(Closure.DELEGATE_FIRST);
-            closure.setDelegate(l);
-            closure.call(l);
+            action.execute(l);
             setUniqueKeys(l);
         }
 
-        public void foreignKeys(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = SyntheticForeignKeyTypeListExtension.class) Closure<?> closure) {
+        public void foreignKeys(Action<? super SyntheticForeignKeyTypeListExtension> action) {
             SyntheticForeignKeyTypeListExtension l = new SyntheticForeignKeyTypeListExtension();
-            closure = (Closure<?>) closure.clone();
-            closure.setResolveStrategy(Closure.DELEGATE_FIRST);
-            closure.setDelegate(l);
-            closure.call(l);
+            action.execute(l);
             setForeignKeys(l);
         }
 
-        public void views(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = SyntheticViewTypeListExtension.class) Closure<?> closure) {
+        public void views(Action<? super SyntheticViewTypeListExtension> action) {
             SyntheticViewTypeListExtension l = new SyntheticViewTypeListExtension();
-            closure = (Closure<?>) closure.clone();
-            closure.setResolveStrategy(Closure.DELEGATE_FIRST);
-            closure.setDelegate(l);
-            closure.call(l);
+            action.execute(l);
             setViews(l);
         }
 
-        public void daos(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = SyntheticDaoTypeListExtension.class) Closure<?> closure) {
+        public void daos(Action<? super SyntheticDaoTypeListExtension> action) {
             SyntheticDaoTypeListExtension l = new SyntheticDaoTypeListExtension();
-            closure = (Closure<?>) closure.clone();
-            closure.setResolveStrategy(Closure.DELEGATE_FIRST);
-            closure.setDelegate(l);
-            closure.call(l);
+            action.execute(l);
             setDaos(l);
         }
     }
@@ -514,12 +432,9 @@ public class MetaExtensions {
 
     public static class SyntheticDaoTypeExtension extends SyntheticDaoType {
 
-        public void methods(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = SyntheticDaoMethodTypeListExtension.class) Closure<?> closure) {
+        public void methods(Action<? super SyntheticDaoMethodTypeListExtension> action) {
             SyntheticDaoMethodTypeListExtension l = new SyntheticDaoMethodTypeListExtension();
-            closure = (Closure<?>) closure.clone();
-            closure.setResolveStrategy(Closure.DELEGATE_FIRST);
-            closure.setDelegate(l);
-            closure.call(l);
+            action.execute(l);
             setMethods(l);
         }
     }
@@ -532,12 +447,9 @@ public class MetaExtensions {
 
     public static class CatalogMappingTypeExtension extends CatalogMappingType {
 
-        public void schemata(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = SchemaMappingTypeListExtension.class) Closure<?> closure) {
+        public void schemata(Action<? super SchemaMappingTypeListExtension> action) {
             SchemaMappingTypeListExtension l = new SchemaMappingTypeListExtension();
-            closure = (Closure<?>) closure.clone();
-            closure.setResolveStrategy(Closure.DELEGATE_FIRST);
-            closure.setDelegate(l);
-            closure.call(l);
+            action.execute(l);
             setSchemata(l);
         }
     }
@@ -547,12 +459,9 @@ public class MetaExtensions {
 
     public static class EmbeddableDefinitionTypeExtension extends EmbeddableDefinitionType {
 
-        public void fields(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = EmbeddableFieldListExtension.class) Closure<?> closure) {
+        public void fields(Action<? super EmbeddableFieldListExtension> action) {
             EmbeddableFieldListExtension l = new EmbeddableFieldListExtension();
-            closure = (Closure<?>) closure.clone();
-            closure.setResolveStrategy(Closure.DELEGATE_FIRST);
-            closure.setDelegate(l);
-            closure.call(l);
+            action.execute(l);
             setFields(l);
         }
     }
@@ -561,12 +470,9 @@ public class MetaExtensions {
     }
 
     public static class CustomTypeExtension extends CustomType {
-        public void lambdaConverter(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = LambdaConverterExtension.class) Closure<?> closure) {
+        public void lambdaConverter(Action<? super LambdaConverterExtension> action) {
             LambdaConverterExtension o = new LambdaConverterExtension();
-            closure = (Closure<?>) closure.clone();
-            closure.setResolveStrategy(Closure.DELEGATE_FIRST);
-            closure.setDelegate(o);
-            closure.call(o);
+            action.execute(o);
             setLambdaConverter(o);
         }
     }
@@ -587,375 +493,274 @@ public class MetaExtensions {
     }
 
     public static class PropertyListExtension extends ArrayList<Property> {
-        public void property(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = PropertyExtension.class) Closure<?> c) {
+        public void property(Action<? super PropertyExtension> action) {
             PropertyExtension o = new PropertyExtension();
-            c = (Closure<?>) c.clone();
-            c.setResolveStrategy(Closure.DELEGATE_FIRST);
-            c.setDelegate(o);
-            c.call(o);
+            action.execute(o);
             add(o);
         }
     }
 
     public static class MatchersCatalogTypeListExtension extends ArrayList<MatchersCatalogType> {
-        public void catalog(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = MatchersCatalogTypeExtension.class) Closure<?> c) {
+        public void catalog(Action<? super MatchersCatalogTypeExtension> action) {
             MatchersCatalogTypeExtension o = new MatchersCatalogTypeExtension();
-            c = (Closure<?>) c.clone();
-            c.setResolveStrategy(Closure.DELEGATE_FIRST);
-            c.setDelegate(o);
-            c.call(o);
+            action.execute(o);
             add(o);
         }
     }
 
     public static class MatchersSchemaTypeListExtension extends ArrayList<MatchersSchemaType> {
-        public void schema(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = MatchersSchemaTypeExtension.class) Closure<?> c) {
+        public void schema(Action<? super MatchersSchemaTypeExtension> action) {
             MatchersSchemaTypeExtension o = new MatchersSchemaTypeExtension();
-            c = (Closure<?>) c.clone();
-            c.setResolveStrategy(Closure.DELEGATE_FIRST);
-            c.setDelegate(o);
-            c.call(o);
+            action.execute(o);
             add(o);
         }
     }
 
     public static class MatchersTableTypeListExtension extends ArrayList<MatchersTableType> {
-        public void table(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = MatchersTableTypeExtension.class) Closure<?> c) {
+        public void table(Action<? super MatchersTableTypeExtension> action) {
             MatchersTableTypeExtension o = new MatchersTableTypeExtension();
-            c = (Closure<?>) c.clone();
-            c.setResolveStrategy(Closure.DELEGATE_FIRST);
-            c.setDelegate(o);
-            c.call(o);
+            action.execute(o);
             add(o);
         }
     }
 
     public static class MatchersIndexTypeListExtension extends ArrayList<MatchersIndexType> {
-        public void index(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = MatchersIndexTypeExtension.class) Closure<?> c) {
+        public void index(Action<? super MatchersIndexTypeExtension> action) {
             MatchersIndexTypeExtension o = new MatchersIndexTypeExtension();
-            c = (Closure<?>) c.clone();
-            c.setResolveStrategy(Closure.DELEGATE_FIRST);
-            c.setDelegate(o);
-            c.call(o);
+            action.execute(o);
             add(o);
         }
     }
 
     public static class MatchersPrimaryKeyTypeListExtension extends ArrayList<MatchersPrimaryKeyType> {
-        public void primaryKey(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = MatchersPrimaryKeyTypeExtension.class) Closure<?> c) {
+        public void primaryKey(Action<? super MatchersPrimaryKeyTypeExtension> action) {
             MatchersPrimaryKeyTypeExtension o = new MatchersPrimaryKeyTypeExtension();
-            c = (Closure<?>) c.clone();
-            c.setResolveStrategy(Closure.DELEGATE_FIRST);
-            c.setDelegate(o);
-            c.call(o);
+            action.execute(o);
             add(o);
         }
     }
 
     public static class MatchersUniqueKeyTypeListExtension extends ArrayList<MatchersUniqueKeyType> {
-        public void uniqueKey(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = MatchersUniqueKeyTypeExtension.class) Closure<?> c) {
+        public void uniqueKey(Action<? super MatchersUniqueKeyTypeExtension> action) {
             MatchersUniqueKeyTypeExtension o = new MatchersUniqueKeyTypeExtension();
-            c = (Closure<?>) c.clone();
-            c.setResolveStrategy(Closure.DELEGATE_FIRST);
-            c.setDelegate(o);
-            c.call(o);
+            action.execute(o);
             add(o);
         }
     }
 
     public static class MatchersForeignKeyTypeListExtension extends ArrayList<MatchersForeignKeyType> {
-        public void foreignKey(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = MatchersForeignKeyTypeExtension.class) Closure<?> c) {
+        public void foreignKey(Action<? super MatchersForeignKeyTypeExtension> action) {
             MatchersForeignKeyTypeExtension o = new MatchersForeignKeyTypeExtension();
-            c = (Closure<?>) c.clone();
-            c.setResolveStrategy(Closure.DELEGATE_FIRST);
-            c.setDelegate(o);
-            c.call(o);
+            action.execute(o);
             add(o);
         }
     }
 
     public static class MatchersFieldTypeListExtension extends ArrayList<MatchersFieldType> {
-        public void field(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = MatchersFieldTypeExtension.class) Closure<?> c) {
+        public void field(Action<? super MatchersFieldTypeExtension> action) {
             MatchersFieldTypeExtension o = new MatchersFieldTypeExtension();
-            c = (Closure<?>) c.clone();
-            c.setResolveStrategy(Closure.DELEGATE_FIRST);
-            c.setDelegate(o);
-            c.call(o);
+            action.execute(o);
             add(o);
         }
     }
 
     public static class MatchersRoutineTypeListExtension extends ArrayList<MatchersRoutineType> {
-        public void routine(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = MatchersRoutineTypeExtension.class) Closure<?> c) {
+        public void routine(Action<? super MatchersRoutineTypeExtension> action) {
             MatchersRoutineTypeExtension o = new MatchersRoutineTypeExtension();
-            c = (Closure<?>) c.clone();
-            c.setResolveStrategy(Closure.DELEGATE_FIRST);
-            c.setDelegate(o);
-            c.call(o);
+            action.execute(o);
             add(o);
         }
     }
 
     public static class MatchersSequenceTypeListExtension extends ArrayList<MatchersSequenceType> {
-        public void sequence(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = MatchersSequenceTypeExtension.class) Closure<?> c) {
+        public void sequence(Action<? super MatchersSequenceTypeExtension> action) {
             MatchersSequenceTypeExtension o = new MatchersSequenceTypeExtension();
-            c = (Closure<?>) c.clone();
-            c.setResolveStrategy(Closure.DELEGATE_FIRST);
-            c.setDelegate(o);
-            c.call(o);
+            action.execute(o);
             add(o);
         }
     }
 
     public static class MatchersEnumTypeListExtension extends ArrayList<MatchersEnumType> {
-        public void enum_(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = MatchersEnumTypeExtension.class) Closure<?> c) {
+        public void enum_(Action<? super MatchersEnumTypeExtension> action) {
             MatchersEnumTypeExtension o = new MatchersEnumTypeExtension();
-            c = (Closure<?>) c.clone();
-            c.setResolveStrategy(Closure.DELEGATE_FIRST);
-            c.setDelegate(o);
-            c.call(o);
+            action.execute(o);
             add(o);
         }
     }
 
     public static class MatchersEmbeddableTypeListExtension extends ArrayList<MatchersEmbeddableType> {
-        public void embeddable(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = MatchersEmbeddableTypeExtension.class) Closure<?> c) {
+        public void embeddable(Action<? super MatchersEmbeddableTypeExtension> action) {
             MatchersEmbeddableTypeExtension o = new MatchersEmbeddableTypeExtension();
-            c = (Closure<?>) c.clone();
-            c.setResolveStrategy(Closure.DELEGATE_FIRST);
-            c.setDelegate(o);
-            c.call(o);
+            action.execute(o);
             add(o);
         }
     }
 
     public static class MatchersUDTTypeListExtension extends ArrayList<MatchersUDTType> {
-        public void udt(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = MatchersUDTTypeExtension.class) Closure<?> c) {
+        public void udt(Action<? super MatchersUDTTypeExtension> action) {
             MatchersUDTTypeExtension o = new MatchersUDTTypeExtension();
-            c = (Closure<?>) c.clone();
-            c.setResolveStrategy(Closure.DELEGATE_FIRST);
-            c.setDelegate(o);
-            c.call(o);
+            action.execute(o);
             add(o);
         }
     }
 
     public static class MatchersAttributeTypeListExtension extends ArrayList<MatchersAttributeType> {
-        public void attribute(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = MatchersAttributeTypeExtension.class) Closure<?> c) {
+        public void attribute(Action<? super MatchersAttributeTypeExtension> action) {
             MatchersAttributeTypeExtension o = new MatchersAttributeTypeExtension();
-            c = (Closure<?>) c.clone();
-            c.setResolveStrategy(Closure.DELEGATE_FIRST);
-            c.setDelegate(o);
-            c.call(o);
+            action.execute(o);
             add(o);
         }
     }
 
     public static class CommentTypeListExtension extends ArrayList<CommentType> {
-        public void comment(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = CommentTypeExtension.class) Closure<?> c) {
+        public void comment(Action<? super CommentTypeExtension> action) {
             CommentTypeExtension o = new CommentTypeExtension();
-            c = (Closure<?>) c.clone();
-            c.setResolveStrategy(Closure.DELEGATE_FIRST);
-            c.setDelegate(o);
-            c.call(o);
+            action.execute(o);
             add(o);
         }
     }
 
     public static class CatalogMappingTypeListExtension extends ArrayList<CatalogMappingType> {
-        public void catalog(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = CatalogMappingTypeExtension.class) Closure<?> c) {
+        public void catalog(Action<? super CatalogMappingTypeExtension> action) {
             CatalogMappingTypeExtension o = new CatalogMappingTypeExtension();
-            c = (Closure<?>) c.clone();
-            c.setResolveStrategy(Closure.DELEGATE_FIRST);
-            c.setDelegate(o);
-            c.call(o);
+            action.execute(o);
             add(o);
         }
     }
 
     public static class SchemaMappingTypeListExtension extends ArrayList<SchemaMappingType> {
-        public void schema(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = SchemaMappingTypeExtension.class) Closure<?> c) {
+        public void schema(Action<? super SchemaMappingTypeExtension> action) {
             SchemaMappingTypeExtension o = new SchemaMappingTypeExtension();
-            c = (Closure<?>) c.clone();
-            c.setResolveStrategy(Closure.DELEGATE_FIRST);
-            c.setDelegate(o);
-            c.call(o);
+            action.execute(o);
             add(o);
         }
     }
 
     public static class EmbeddableDefinitionTypeListExtension extends ArrayList<EmbeddableDefinitionType> {
-        public void embeddable(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = EmbeddableDefinitionTypeExtension.class) Closure<?> c) {
+        public void embeddable(Action<? super EmbeddableDefinitionTypeExtension> action) {
             EmbeddableDefinitionTypeExtension o = new EmbeddableDefinitionTypeExtension();
-            c = (Closure<?>) c.clone();
-            c.setResolveStrategy(Closure.DELEGATE_FIRST);
-            c.setDelegate(o);
-            c.call(o);
+            action.execute(o);
             add(o);
         }
     }
 
+    @SuppressWarnings("ALL")
     public static class CustomTypeListExtension extends ArrayList<CustomType> {
-        public void customType(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = CustomTypeExtension.class) Closure<?> c) {
+        public void customType(Action<? super CustomTypeExtension> action) {
             CustomTypeExtension o = new CustomTypeExtension();
-            c = (Closure<?>) c.clone();
-            c.setResolveStrategy(Closure.DELEGATE_FIRST);
-            c.setDelegate(o);
-            c.call(o);
+            action.execute(o);
             add(o);
         }
     }
 
     public static class EnumTypeListExtension extends ArrayList<EnumType> {
-        public void enumType(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = EnumTypeExtension.class) Closure<?> c) {
+        public void enumType(Action<? super EnumTypeExtension> action) {
             EnumTypeExtension o = new EnumTypeExtension();
-            c = (Closure<?>) c.clone();
-            c.setResolveStrategy(Closure.DELEGATE_FIRST);
-            c.setDelegate(o);
-            c.call(o);
+            action.execute(o);
             add(o);
         }
     }
 
     public static class ForcedTypeListExtension extends ArrayList<ForcedType> {
-        public void forcedType(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = ForcedTypeExtension.class) Closure<?> c) {
+        public void forcedType(Action<? super ForcedTypeExtension> action) {
             ForcedTypeExtension o = new ForcedTypeExtension();
-            c = (Closure<?>) c.clone();
-            c.setResolveStrategy(Closure.DELEGATE_FIRST);
-            c.setDelegate(o);
-            c.call(o);
+            action.execute(o);
             add(o);
         }
     }
 
     public static class SyntheticReadonlyColumnTypeListExtension extends ArrayList<SyntheticReadonlyColumnType> {
-        public void readonlyColumn(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = SyntheticReadonlyColumnTypeExtension.class) Closure<?> c) {
+        public void readonlyColumn(Action<? super SyntheticReadonlyColumnTypeExtension> action) {
             SyntheticReadonlyColumnTypeExtension o = new SyntheticReadonlyColumnTypeExtension();
-            c = (Closure<?>) c.clone();
-            c.setResolveStrategy(Closure.DELEGATE_FIRST);
-            c.setDelegate(o);
-            c.call(o);
+            action.execute(o);
             add(o);
         }
     }
 
     public static class SyntheticReadonlyRowidTypeListExtension extends ArrayList<SyntheticReadonlyRowidType> {
-        public void readonlyRowid(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = SyntheticReadonlyRowidTypeExtension.class) Closure<?> c) {
+        public void readonlyRowid(Action<? super SyntheticReadonlyRowidTypeExtension> action) {
             SyntheticReadonlyRowidTypeExtension o = new SyntheticReadonlyRowidTypeExtension();
-            c = (Closure<?>) c.clone();
-            c.setResolveStrategy(Closure.DELEGATE_FIRST);
-            c.setDelegate(o);
-            c.call(o);
+            action.execute(o);
             add(o);
         }
     }
 
     public static class SyntheticColumnTypeListExtension extends ArrayList<SyntheticColumnType> {
-        public void column(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = SyntheticColumnTypeExtension.class) Closure<?> c) {
+        public void column(Action<? super SyntheticColumnTypeExtension> action) {
             SyntheticColumnTypeExtension o = new SyntheticColumnTypeExtension();
-            c = (Closure<?>) c.clone();
-            c.setResolveStrategy(Closure.DELEGATE_FIRST);
-            c.setDelegate(o);
-            c.call(o);
+            action.execute(o);
             add(o);
         }
     }
 
     public static class SyntheticIdentityTypeListExtension extends ArrayList<SyntheticIdentityType> {
-        public void identity(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = SyntheticIdentityTypeExtension.class) Closure<?> c) {
+        public void identity(Action<? super SyntheticIdentityTypeExtension> action) {
             SyntheticIdentityTypeExtension o = new SyntheticIdentityTypeExtension();
-            c = (Closure<?>) c.clone();
-            c.setResolveStrategy(Closure.DELEGATE_FIRST);
-            c.setDelegate(o);
-            c.call(o);
+            action.execute(o);
             add(o);
         }
     }
 
     public static class SyntheticEnumTypeListExtension extends ArrayList<SyntheticEnumType> {
-        public void enum_(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = SyntheticEnumTypeExtension.class) Closure<?> c) {
+        public void enum_(Action<? super SyntheticEnumTypeExtension> action) {
             SyntheticEnumTypeExtension o = new SyntheticEnumTypeExtension();
-            c = (Closure<?>) c.clone();
-            c.setResolveStrategy(Closure.DELEGATE_FIRST);
-            c.setDelegate(o);
-            c.call(o);
+            action.execute(o);
             add(o);
         }
     }
 
     public static class SyntheticPrimaryKeyTypeListExtension extends ArrayList<SyntheticPrimaryKeyType> {
-        public void primaryKey(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = SyntheticPrimaryKeyTypeExtension.class) Closure<?> c) {
+        public void primaryKey(Action<? super SyntheticPrimaryKeyTypeExtension> action) {
             SyntheticPrimaryKeyTypeExtension o = new SyntheticPrimaryKeyTypeExtension();
-            c = (Closure<?>) c.clone();
-            c.setResolveStrategy(Closure.DELEGATE_FIRST);
-            c.setDelegate(o);
-            c.call(o);
+            action.execute(o);
             add(o);
         }
     }
 
     public static class SyntheticUniqueKeyTypeListExtension extends ArrayList<SyntheticUniqueKeyType> {
-        public void uniqueKey(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = SyntheticUniqueKeyTypeExtension.class) Closure<?> c) {
+        public void uniqueKey(Action<? super SyntheticUniqueKeyTypeExtension> action) {
             SyntheticUniqueKeyTypeExtension o = new SyntheticUniqueKeyTypeExtension();
-            c = (Closure<?>) c.clone();
-            c.setResolveStrategy(Closure.DELEGATE_FIRST);
-            c.setDelegate(o);
-            c.call(o);
+            action.execute(o);
             add(o);
         }
     }
 
     public static class SyntheticForeignKeyTypeListExtension extends ArrayList<SyntheticForeignKeyType> {
-        public void foreignKey(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = SyntheticForeignKeyTypeExtension.class) Closure<?> c) {
+        public void foreignKey(Action<? super SyntheticForeignKeyTypeExtension> action) {
             SyntheticForeignKeyTypeExtension o = new SyntheticForeignKeyTypeExtension();
-            c = (Closure<?>) c.clone();
-            c.setResolveStrategy(Closure.DELEGATE_FIRST);
-            c.setDelegate(o);
-            c.call(o);
+            action.execute(o);
             add(o);
         }
     }
 
     public static class SyntheticViewTypeListExtension extends ArrayList<SyntheticViewType> {
-        public void view(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = SyntheticViewTypeExtension.class) Closure<?> c) {
+        public void view(Action<? super SyntheticViewTypeExtension> action) {
             SyntheticViewTypeExtension o = new SyntheticViewTypeExtension();
-            c = (Closure<?>) c.clone();
-            c.setResolveStrategy(Closure.DELEGATE_FIRST);
-            c.setDelegate(o);
-            c.call(o);
+            action.execute(o);
             add(o);
         }
     }
 
     public static class SyntheticDaoTypeListExtension extends ArrayList<SyntheticDaoType> {
-        public void dao(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = SyntheticDaoTypeExtension.class) Closure<?> c) {
+        public void dao(Action<? super SyntheticDaoTypeExtension> action) {
             SyntheticDaoTypeExtension o = new SyntheticDaoTypeExtension();
-            c = (Closure<?>) c.clone();
-            c.setResolveStrategy(Closure.DELEGATE_FIRST);
-            c.setDelegate(o);
-            c.call(o);
+            action.execute(o);
             add(o);
         }
     }
 
     public static class SyntheticDaoMethodTypeListExtension extends ArrayList<SyntheticDaoMethodType> {
-        public void method(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = SyntheticDaoMethodTypeExtension.class) Closure<?> c) {
+        public void method(Action<? super SyntheticDaoMethodTypeExtension> action) {
             SyntheticDaoMethodTypeExtension o = new SyntheticDaoMethodTypeExtension();
-            c = (Closure<?>) c.clone();
-            c.setResolveStrategy(Closure.DELEGATE_FIRST);
-            c.setDelegate(o);
-            c.call(o);
+            action.execute(o);
             add(o);
         }
     }
 
     public static class EmbeddableFieldListExtension extends ArrayList<EmbeddableField> {
-        public void field(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = EmbeddableFieldExtension.class) Closure<?> c) {
+        public void field(Action<? super EmbeddableFieldExtension> action) {
             EmbeddableFieldExtension o = new EmbeddableFieldExtension();
-            c = (Closure<?>) c.clone();
-            c.setResolveStrategy(Closure.DELEGATE_FIRST);
-            c.setDelegate(o);
-            c.call(o);
+            action.execute(o);
             add(o);
         }
     }

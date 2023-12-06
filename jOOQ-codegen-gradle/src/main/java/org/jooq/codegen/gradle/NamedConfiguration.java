@@ -37,15 +37,13 @@
  */
 package org.jooq.codegen.gradle;
 
+import org.gradle.api.Action;
 import org.jooq.meta.jaxb.Configuration;
 import org.jooq.meta.jaxb.Generator;
 import org.jooq.meta.jaxb.Target;
 import org.jooq.util.jaxb.tools.MiniJAXB;
 
 import javax.inject.Inject;
-
-import groovy.lang.*;
-import org.codehaus.groovy.runtime.*;
 
 /**
  * A wrapper for a name, configuration pair.
@@ -85,12 +83,9 @@ public class NamedConfiguration {
         MiniJAXB.append(this.configuration, configuration);
     }
 
-    public void configuration(@DelegatesTo(strategy = Closure.DELEGATE_FIRST, value = MetaExtensions.ConfigurationExtension.class) Closure<?> closure) {
+    public void configuration(Action<Configuration> action) {
         MetaExtensions.ConfigurationExtension c = new MetaExtensions.ConfigurationExtension();
-        closure = (Closure<?>) closure.clone();
-        closure.setResolveStrategy(Closure.DELEGATE_FIRST);
-        closure.setDelegate(c);
-        closure.call(c);
+        action.execute(c);
         configuration(c);
     }
 
